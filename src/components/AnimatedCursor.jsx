@@ -6,6 +6,7 @@ import { motion, useSpring } from "framer-motion";
 export default function AnimatedCursor() {
   const [isHovering, setIsHovering] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   
   const cursorX = useSpring(0, { stiffness: 250, damping: 15, mass: 0.5 });
   const cursorY = useSpring(0, { stiffness: 250, damping: 15, mass: 0.5 });
@@ -13,6 +14,7 @@ export default function AnimatedCursor() {
   const dotY = useSpring(0, { stiffness: 1000, damping: 40, mass: 0.1 });
 
   useEffect(() => {
+    setIsMounted(true);
     // Only run on non-touch devices
     if (window.matchMedia("(pointer: coarse)").matches) return;
 
@@ -50,7 +52,7 @@ export default function AnimatedCursor() {
   }, [cursorX, cursorY, dotX, dotY, isVisible]);
 
   // Don't render on server
-  if (typeof window === "undefined") return null;
+  if (!isMounted) return null;
 
   return (
     <>
@@ -65,8 +67,8 @@ export default function AnimatedCursor() {
         }}
         animate={{
           scale: isHovering ? 1.5 : 1,
-          backgroundColor: isHovering ? "currentColor" : "transparent",
-          borderColor: isHovering ? "transparent" : "currentColor"
+          backgroundColor: isHovering ? "currentColor" : "rgba(0, 0, 0, 0)",
+          borderColor: isHovering ? "rgba(0, 0, 0, 0)" : "currentColor"
         }}
         transition={{ duration: 0.2 }}
       />

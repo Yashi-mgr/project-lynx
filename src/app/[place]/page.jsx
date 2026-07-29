@@ -4,8 +4,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { placesData } from "@/data/places";
 
-export default function MustangGallery() {
+export default function PlaceGallery() {
+  const params = useParams();
+  const router = useRouter();
+  const placeId = params?.place;
+  const placeData = placesData[placeId];
+
   const containerRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -18,19 +25,30 @@ export default function MustangGallery() {
   useEffect(() => {
     if (containerRef.current) {
       const container = containerRef.current;
-      // Start near the middle-left instead of exact center for better initial view
       container.scrollLeft = (container.scrollWidth - container.clientWidth) * 0.1;
       container.scrollTop = (container.scrollHeight - container.clientHeight) * 0.2;
     }
-  }, []);
+  }, [placeId]);
 
   useEffect(() => {
-    // Hide intro after 7 seconds to let the staggered words finish and rest
+    // Reset intro if place changes
+    setShowIntro(true);
     const timer = setTimeout(() => {
       setShowIntro(false);
     }, 7000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [placeId]);
+
+  if (!placeData) {
+    return (
+      <div className="flex items-center justify-center w-screen h-screen bg-black text-white">
+        <div className="text-center">
+          <h1 className="text-4xl mb-4">Place not found</h1>
+          <Link href="/" className="underline hover:text-gray-300">Return Home</Link>
+        </div>
+      </div>
+    );
+  }
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
@@ -40,40 +58,23 @@ export default function MustangGallery() {
     setScrollTop(containerRef.current.scrollTop);
   };
 
-  const handleMouseLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
+  const handleMouseLeave = () => setIsDragging(false);
+  const handleMouseUp = () => setIsDragging(false);
 
   const handleMouseMove = (e) => {
     if (!isDragging) return;
     e.preventDefault();
     const x = e.pageX - containerRef.current.offsetLeft;
     const y = e.pageY - containerRef.current.offsetTop;
-    const walkX = (x - startX) * 1.5; // scroll speed multiplier
+    const walkX = (x - startX) * 1.5;
     const walkY = (y - startY) * 1.5;
     containerRef.current.scrollLeft = scrollLeft - walkX;
     containerRef.current.scrollTop = scrollTop - walkY;
   };
 
-  const galleryImages = [
-    { src: "https://picsum.photos/800/600?random=11", top: "10%", left: "5%", width: "400px" },
-    { src: "https://picsum.photos/600/800?random=12", top: "5%", left: "35%", width: "300px" },
-    { src: "https://picsum.photos/800/600?random=13", top: "15%", left: "65%", width: "450px" },
-    { src: "https://picsum.photos/600/800?random=14", top: "45%", left: "15%", width: "350px" },
-    { src: "https://picsum.photos/800/600?random=15", top: "55%", left: "45%", width: "400px" },
-    { src: "https://picsum.photos/600/800?random=16", top: "40%", left: "80%", width: "300px" },
-    { src: "https://picsum.photos/800/600?random=17", top: "75%", left: "8%", width: "450px" },
-    { src: "https://picsum.photos/600/800?random=18", top: "85%", left: "38%", width: "350px" },
-    { src: "https://picsum.photos/800/600?random=19", top: "70%", left: "70%", width: "500px" },
-  ];
-
-  const text1 = "Mustang".split(" ");
-  const text2 = "The Story of Mustang".split(" ");
-  const text3 = "A journey through Nepal's hidden kingdom, where every mountain, monastery, and trail holds a story waiting to be discovered.".split(" ");
+  const text1 = placeData.titleText.split(" ");
+  const text2 = placeData.subtitleText.split(" ");
+  const text3 = placeData.descriptionText.split(" ");
 
   const wordVariants = {
     hidden: { opacity: 0, y: 20, filter: "blur(10px)" },
@@ -92,17 +93,24 @@ export default function MustangGallery() {
   };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-[#8cb7d4]">
+    <div 
+      className="relative w-screen h-screen overflow-hidden transition-colors duration-1000"
+      style={{ backgroundColor: placeData.theme.bg }}
+    >
       {/* Intro Text Animation Overlay */}
       <AnimatePresence>
         {showIntro && (
           <motion.div
-            className="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-[#8cb7d4] text-white px-8 text-center pointer-events-none"
+            className="absolute inset-0 z-[100] flex flex-col items-center justify-center text-white px-8 text-center pointer-events-none"
+            style={{ backgroundColor: placeData.theme.bg }}
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, filter: "blur(10px)", transition: { duration: 2, ease: "easeInOut" } }}
           >
             <div className="max-w-3xl space-y-12">
-              <div className="text-6xl md:text-8xl font-serif tracking-widest uppercase text-[#F3E5AB]" style={{ textShadow: '2px 2px 20px rgba(0,0,0,0.2)' }}>
+              <div 
+                className="text-6xl md:text-8xl font-serif tracking-widest uppercase" 
+                style={{ color: placeData.theme.textHighlight, textShadow: '2px 2px 20px rgba(0,0,0,0.2)' }}
+              >
                 {text1.map((word, i) => (
                   <motion.span key={i} custom={i} variants={wordVariants} initial="hidden" animate="visible" exit="exit" className="inline-block mx-3">
                     {word}
@@ -131,10 +139,14 @@ export default function MustangGallery() {
       {/* Fixed Sidebar Text */}
       <div className="absolute left-0 top-0 h-full w-24 md:w-32 flex items-center justify-center z-50 pointer-events-none">
         <h1 
-          className="text-6xl md:text-[7rem] lg:text-[8rem] font-sans tracking-widest text-[#5c85a6] -rotate-90 whitespace-nowrap mix-blend-multiply opacity-70" 
-          style={{ fontWeight: 300, transformOrigin: 'center center' }}
+          className="text-6xl md:text-[7rem] lg:text-[8rem] font-sans tracking-widest -rotate-90 whitespace-nowrap mix-blend-multiply opacity-70" 
+          style={{ 
+            color: placeData.theme.sidebarText, 
+            fontWeight: 300, 
+            transformOrigin: 'center center' 
+          }}
         >
-          MUSTANG
+          {placeData.titleText.toUpperCase()}
         </h1>
       </div>
 
@@ -160,7 +172,7 @@ export default function MustangGallery() {
             </Link>
           </div>
 
-          {galleryImages.map((img, index) => (
+          {placeData.images.map((img, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, scale: 0.95 }}
@@ -177,7 +189,7 @@ export default function MustangGallery() {
               <div className="relative w-full h-full border-[6px] border-white/20 overflow-hidden">
                 <Image
                   src={img.src}
-                  alt={`Mustang image ${index + 1}`}
+                  alt={`${placeData.titleText} image ${index + 1}`}
                   fill
                   className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
                   unoptimized

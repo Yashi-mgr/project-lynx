@@ -67,8 +67,8 @@ export default function AnimatedCursor() {
         }}
         animate={{
           scale: isHovering ? 1.5 : 1,
-          backgroundColor: isHovering ? "currentColor" : "rgba(0, 0, 0, 0)",
-          borderColor: isHovering ? "rgba(0, 0, 0, 0)" : "currentColor"
+          backgroundColor: isHovering ? "var(--foreground)" : "transparent",
+          borderColor: isHovering ? "transparent" : "var(--foreground)"
         }}
         transition={{ duration: 0.2 }}
       />

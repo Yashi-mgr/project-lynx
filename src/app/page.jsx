@@ -52,31 +52,23 @@ function KnowMoreButton() {
 
 export default function Home() {
   const router = useRouter();
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [hoveredImage, setHoveredImage] = useState(null);
+  const [clickedImage, setClickedImage] = useState(null);
 
   // Replace the 'src' values below with your own image paths (e.g., '/images/your-image.jpg')
   // Update the titles and href to point to your new destinations
   const images = [
-    { src: "https://picsum.photos/400/800?random=1", height: "h-[45vh] md:h-[50vh]", alt: "Mustang landscape", title1: "Echoes", title2: "Of", title3: "MUSTANG", href: "/mustang" },
-    { src: "https://picsum.photos/400/800?random=2", height: "h-[55vh] md:h-[65vh]", alt: "Pokhara view", title1: "Lakes", title2: "Of", title3: "POKHARA", href: "/pokhara" },
+    { src: "/images/mustang/Landing.jpg", height: "h-[45vh] md:h-[50vh]", alt: "Mustang landscape", title1: "Echoes", title2: "Of", title3: "MUSTANG", href: "/mustang" },
+    { src: "/images/pokhara/Landing.jpg", height: "h-[55vh] md:h-[65vh]", alt: "Pokhara view", title1: "Lakes", title2: "Of", title3: "POKHARA", href: "/pokhara" },
     { src: "https://picsum.photos/400/800?random=3", height: "h-[65vh] md:h-[80vh]", alt: "Manang mountains", title1: "Spirit", title2: "Of", title3: "MANANG", href: "/manang" },
     { src: "https://picsum.photos/400/800?random=4", height: "h-[55vh] md:h-[65vh]", alt: "Sunlight through clouds", title1: "Heart", title2: "Of", title3: "NEPAL", href: "/nepal" },
     { src: "https://picsum.photos/400/800?random=5", height: "h-[45vh] md:h-[50vh]", alt: "Mountain village", title1: "Soul", title2: "Of", title3: "HIMALAYAS", href: "/himalayas" },
   ];
 
-  useEffect(() => {
-    if (selectedImage !== null) {
-      const timer = setTimeout(() => {
-        router.push(images[selectedImage].href);
-      }, 3500); // Wait 3.5s before navigating
-      return () => clearTimeout(timer);
-    }
-  }, [selectedImage, router]);
-
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden bg-background">
       {/* Navigation */}
-      <nav className={`w-full flex justify-between items-start p-8 md:p-12 lg:px-16 absolute top-0 z-10 transition-opacity duration-500 ${selectedImage !== null ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+      <nav className={`w-full flex justify-between items-start p-8 md:p-12 lg:px-16 absolute top-0 z-10 transition-opacity duration-500 ${hoveredImage !== null || clickedImage !== null ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <div className="flex flex-col items-center">
           <h1
             className="text-6xl md:text-7xl font-light tracking-tighter text-foreground"
@@ -100,8 +92,9 @@ export default function Home() {
       <main className="flex-1 flex items-center justify-center w-full px-12 md:px-24">
         <div className="flex items-center justify-center w-full max-w-5xl">
           {images.map((img, index) => {
-            const isSelected = selectedImage === index;
-            const isAnySelected = selectedImage !== null;
+            const activeImage = clickedImage !== null ? clickedImage : hoveredImage;
+            const isActive = activeImage === index;
+            const isAnyActive = activeImage !== null;
 
             return (
               <motion.div
@@ -109,23 +102,32 @@ export default function Home() {
                 key={index}
                 initial={{ opacity: 0, y: 80 }}
                 animate={{
-                  opacity: isAnySelected && !isSelected ? 0 : 1,
+                  opacity: isAnyActive && !isActive ? 0 : 1,
                   y: 0
                 }}
                 transition={{
                   duration: 1,
-                  delay: isAnySelected ? 0 : index * 0.15,
+                  delay: isAnyActive ? 0 : index * 0.15,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                onClick={() => !isAnySelected && setSelectedImage(index)}
-                className={`relative flex-1 w-full ${img.height} overflow-hidden group ${isAnySelected && !isSelected ? 'pointer-events-none' : 'cursor-pointer'}`}
+                onClick={() => {
+                  setClickedImage(index);
+                  router.push(img.href);
+                }}
+                onMouseEnter={() => {
+                  if (clickedImage === null) setHoveredImage(index);
+                }}
+                onMouseLeave={() => {
+                  if (clickedImage === null) setHoveredImage(null);
+                }}
+                className={`relative flex-1 w-full ${img.height} overflow-hidden group ${isAnyActive && !isActive ? 'pointer-events-none' : 'cursor-pointer'}`}
               >
                 <motion.div layoutId={`image-${index}`} className="w-full h-full relative">
                   <Image
                     src={img.src}
                     alt={img.alt}
                     fill
-                    className={`object-cover transition-all duration-1000 ease-out ${isSelected ? 'grayscale-0' : 'grayscale group-hover:grayscale-0 group-hover:scale-105'}`}
+                    className={`object-cover transition-all duration-1000 ease-out ${isActive ? 'grayscale-0' : 'grayscale group-hover:grayscale-0 group-hover:scale-105'}`}
                     unoptimized
                   />
                 </motion.div>
@@ -136,13 +138,13 @@ export default function Home() {
       </main>
 
       {/* Right side text */}
-      <div className={`absolute right-4 md:right-8 top-1/2 flex items-center justify-center w-12 h-12 -translate-y-1/2 transition-opacity duration-500 ${selectedImage !== null ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+      <div className={`absolute right-4 md:right-8 top-1/2 flex items-center justify-center w-12 h-12 -translate-y-1/2 transition-opacity duration-500 ${hoveredImage !== null || clickedImage !== null ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <KnowMoreButton />
       </div>
 
       {/* Full Screen Cinematic Overlay */}
       <AnimatePresence>
-        {selectedImage !== null && (
+        {(hoveredImage !== null || clickedImage !== null) && (
           <motion.div
             className="fixed inset-0 z-50 pointer-events-none flex flex-col items-center justify-center"
             initial={{ opacity: 0 }}
@@ -150,16 +152,16 @@ export default function Home() {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              layoutId={`image-container-${selectedImage}`}
+              layoutId={`image-container-${clickedImage !== null ? clickedImage : hoveredImage}`}
               className="absolute inset-0 z-40"
               initial={{ borderRadius: "16px" }}
               animate={{ borderRadius: "0px" }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
-              <motion.div layoutId={`image-${selectedImage}`} className="w-full h-full relative">
+              <motion.div layoutId={`image-${clickedImage !== null ? clickedImage : hoveredImage}`} className="w-full h-full relative">
                 <Image
-                  src={images[selectedImage].src}
-                  alt={images[selectedImage].alt}
+                  src={images[clickedImage !== null ? clickedImage : hoveredImage].src}
+                  alt={images[clickedImage !== null ? clickedImage : hoveredImage].alt}
                   fill
                   className="object-cover grayscale-0"
                   unoptimized
@@ -181,13 +183,13 @@ export default function Home() {
               transition={{ duration: 1.5, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
               <h2 className="text-4xl md:text-6xl lg:text-7xl text-white font-serif tracking-widest mb-4" style={{ textShadow: '2px 2px 20px rgba(0,0,0,0.8)' }}>
-                {images[selectedImage].title1}
+                {images[clickedImage !== null ? clickedImage : hoveredImage].title1}
               </h2>
               <h3 className="text-2xl md:text-4xl text-white/80 font-serif tracking-[0.3em] mb-4">
-                {images[selectedImage].title2}
+                {images[clickedImage !== null ? clickedImage : hoveredImage].title2}
               </h3>
               <h1 className="text-6xl md:text-8xl lg:text-[9rem] text-[#E5D3B3] font-serif tracking-tighter uppercase" style={{ textShadow: '0 0 40px rgba(229,211,179,0.3)' }}>
-                {images[selectedImage].title3}
+                {images[clickedImage !== null ? clickedImage : hoveredImage].title3}
               </h1>
             </motion.div>
           </motion.div>

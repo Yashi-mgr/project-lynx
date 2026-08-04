@@ -20,6 +20,8 @@ export default function PlaceGallery() {
   const [scrollLeft, setScrollLeft] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
   const [showIntro, setShowIntro] = useState(true);
+  const [viewMode, setViewMode] = useState("gallery");
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Initial center scroll position
   useEffect(() => {
@@ -150,56 +152,150 @@ export default function PlaceGallery() {
         </h1>
       </div>
 
-      {/* 2D Scrollable Area */}
-      <div 
-        ref={containerRef}
-        className={`w-full h-full overflow-auto ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-        onMouseDown={handleMouseDown}
-        onMouseLeave={handleMouseLeave}
-        onMouseUp={handleMouseUp}
-        onMouseMove={handleMouseMove}
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
-        <div className="relative w-[250vw] h-[200vh] min-w-[2000px] min-h-[1500px]">
-          {/* Back button */}
-          <div className="absolute top-12 left-32 z-50">
-            <Link href="/" className="text-black/60 hover:text-black transition-colors font-medium flex items-center gap-2 px-4 py-2 bg-white/30 backdrop-blur-md rounded-full border border-white/40">
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-              </svg>
-              Back to Start
-            </Link>
-          </div>
-
-          {placeData.images.map((img, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: index * 0.1 + 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute group shadow-2xl"
-              style={{
-                top: img.top,
-                left: img.left,
-                width: img.width,
-                aspectRatio: img.src.includes('800/600') ? '4/3' : '3/4'
-              }}
-            >
-              <div className="relative w-full h-full border-[6px] border-white/20 overflow-hidden">
-                <Image
-                  src={img.src}
-                  alt={`${placeData.titleText} image ${index + 1}`}
-                  fill
-                  className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
-                  unoptimized
-                  draggable="false"
-                />
-              </div>
-            </motion.div>
-          ))}
-        </div>
+      {/* View Toggle */}
+      <div className="absolute top-12 right-12 z-50 flex gap-2 bg-white/10 backdrop-blur-md rounded-full p-1 border border-white/20 shadow-lg">
+        <button 
+          onClick={() => setViewMode("gallery")}
+          className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${viewMode === "gallery" ? "bg-white text-black shadow-sm" : "text-white hover:bg-white/20"}`}
+        >
+          Gallery
+        </button>
+        <button 
+          onClick={() => setViewMode("single")}
+          className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${viewMode === "single" ? "bg-white text-black shadow-sm" : "text-white hover:bg-white/20"}`}
+        >
+          Single
+        </button>
       </div>
+
+      <AnimatePresence mode="wait">
+        {viewMode === "gallery" ? (
+          <motion.div
+            key="gallery-view"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8 }}
+            className="absolute inset-0"
+          >
+            {/* 2D Scrollable Area */}
+            <div 
+              ref={containerRef}
+              className={`w-full h-full overflow-auto ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+              onMouseDown={handleMouseDown}
+              onMouseLeave={handleMouseLeave}
+              onMouseUp={handleMouseUp}
+              onMouseMove={handleMouseMove}
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              <div className="relative w-[180vw] h-[150vh] min-w-[1400px] min-h-[900px]">
+                {/* Back button */}
+                <div className="absolute top-12 left-32 z-50">
+                  <Link href="/" className="text-black/60 hover:text-black transition-colors font-medium flex items-center gap-2 px-4 py-2 bg-white/30 backdrop-blur-md rounded-full border border-white/40 shadow-sm">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="19" y1="12" x2="5" y2="12"></line>
+                      <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Back to Start
+                  </Link>
+                </div>
+
+                {placeData.images.map((img, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: 60, filter: "blur(8px)" }}
+                    whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                    viewport={{ root: containerRef, once: false, amount: 0.15 }}
+                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                    className="absolute group shadow-2xl"
+                    style={{
+                      top: img.top,
+                      left: img.left,
+                      width: img.width,
+                      aspectRatio: img.src.includes('800/600') ? '4/3' : '3/4'
+                    }}
+                  >
+                    <div className="relative w-full h-full border-[6px] border-white/20 overflow-hidden">
+                      <Image
+                        src={img.src}
+                        alt={`${placeData.titleText} image ${index + 1}`}
+                        fill
+                        className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
+                        unoptimized
+                        draggable="false"
+                      />
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="single-view"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8 }}
+            className="absolute inset-0 flex items-center justify-center z-40 pointer-events-none"
+          >
+            {/* Back button (Single view) */}
+            <div className="absolute top-12 left-32 z-50 pointer-events-auto">
+              <Link href="/" className="text-white/80 hover:text-white transition-colors font-medium flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20 shadow-sm">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Back to Start
+              </Link>
+            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentImageIndex}
+                initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: -40, filter: "blur(10px)" }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="relative pointer-events-auto shadow-2xl"
+                style={{
+                  width: placeData.images[currentImageIndex].width,
+                  aspectRatio: placeData.images[currentImageIndex].src.includes('800/600') ? '4/3' : '3/4',
+                  maxWidth: '70vw',
+                  maxHeight: '75vh'
+                }}
+              >
+                <div className="relative w-full h-full border-[6px] border-white/20 overflow-hidden">
+                  <Image
+                    src={placeData.images[currentImageIndex].src}
+                    alt={`${placeData.titleText} image ${currentImageIndex + 1}`}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                    draggable="false"
+                  />
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Navigation Buttons */}
+            <div className="absolute right-12 top-1/2 -translate-y-1/2 flex flex-col gap-6 pointer-events-auto">
+              <button 
+                onClick={() => setCurrentImageIndex(prev => (prev > 0 ? prev - 1 : placeData.images.length - 1))}
+                className="p-4 bg-white/10 hover:bg-white/30 backdrop-blur-md rounded-full border border-white/30 text-white transition-all hover:-translate-y-1 shadow-lg"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+              </button>
+              <button 
+                onClick={() => setCurrentImageIndex(prev => (prev < placeData.images.length - 1 ? prev + 1 : 0))}
+                className="p-4 bg-white/10 hover:bg-white/30 backdrop-blur-md rounded-full border border-white/30 text-white transition-all hover:translate-y-1 shadow-lg"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       {/* Hide scrollbar styles for webkit */}
       <style dangerouslySetInnerHTML={{__html: `

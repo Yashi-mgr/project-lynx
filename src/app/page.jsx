@@ -52,7 +52,6 @@ function KnowMoreButton() {
 
 export default function Home() {
   const router = useRouter();
-  const [hoveredImage, setHoveredImage] = useState(null);
   const [clickedImage, setClickedImage] = useState(null);
 
   // Replace the 'src' values below with your own image paths (e.g., '/images/your-image.jpg')
@@ -68,7 +67,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden bg-background">
       {/* Navigation */}
-      <nav className={`w-full flex justify-between items-start p-8 md:p-12 lg:px-16 absolute top-0 z-10 transition-opacity duration-500 ${hoveredImage !== null || clickedImage !== null ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+      <nav className={`w-full flex justify-between items-start p-8 md:p-12 lg:px-16 absolute top-0 z-10 transition-opacity duration-500 ${clickedImage !== null ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <div className="flex flex-col items-center">
           <h1
             className="text-6xl md:text-7xl font-light tracking-tighter text-foreground"
@@ -92,9 +91,8 @@ export default function Home() {
       <main className="flex-1 flex items-center justify-center w-full px-12 md:px-24">
         <div className="flex items-center justify-center w-full max-w-5xl">
           {images.map((img, index) => {
-            const activeImage = clickedImage !== null ? clickedImage : hoveredImage;
-            const isActive = activeImage === index;
-            const isAnyActive = activeImage !== null;
+            const isActive = clickedImage === index;
+            const isAnyActive = clickedImage !== null;
 
             return (
               <motion.div
@@ -111,14 +109,9 @@ export default function Home() {
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 onClick={() => {
-                  setClickedImage(index);
-                  router.push(img.href);
-                }}
-                onMouseEnter={() => {
-                  if (clickedImage === null) setHoveredImage(index);
-                }}
-                onMouseLeave={() => {
-                  if (clickedImage === null) setHoveredImage(null);
+                  if (clickedImage === null) {
+                    setClickedImage(index);
+                  }
                 }}
                 className={`relative flex-1 w-full ${img.height} overflow-hidden group ${isAnyActive && !isActive ? 'pointer-events-none' : 'cursor-pointer'}`}
               >
@@ -138,13 +131,13 @@ export default function Home() {
       </main>
 
       {/* Right side text */}
-      <div className={`absolute right-4 md:right-8 top-1/2 flex items-center justify-center w-12 h-12 -translate-y-1/2 transition-opacity duration-500 ${hoveredImage !== null || clickedImage !== null ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+      <div className={`absolute right-4 md:right-8 top-1/2 flex items-center justify-center w-12 h-12 -translate-y-1/2 transition-opacity duration-500 ${clickedImage !== null ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <KnowMoreButton />
       </div>
 
       {/* Full Screen Cinematic Overlay */}
       <AnimatePresence>
-        {(hoveredImage !== null || clickedImage !== null) && (
+        {clickedImage !== null && (
           <motion.div
             className="fixed inset-0 z-50 pointer-events-none flex flex-col items-center justify-center"
             initial={{ opacity: 0 }}
@@ -152,16 +145,16 @@ export default function Home() {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              layoutId={`image-container-${clickedImage !== null ? clickedImage : hoveredImage}`}
+              layoutId={`image-container-${clickedImage}`}
               className="absolute inset-0 z-40"
               initial={{ borderRadius: "16px" }}
               animate={{ borderRadius: "0px" }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
-              <motion.div layoutId={`image-${clickedImage !== null ? clickedImage : hoveredImage}`} className="w-full h-full relative">
+              <motion.div layoutId={`image-${clickedImage}`} className="w-full h-full relative">
                 <Image
-                  src={images[clickedImage !== null ? clickedImage : hoveredImage].src}
-                  alt={images[clickedImage !== null ? clickedImage : hoveredImage].alt}
+                  src={images[clickedImage].src}
+                  alt={images[clickedImage].alt}
                   fill
                   className="object-cover grayscale-0"
                   unoptimized
@@ -183,15 +176,43 @@ export default function Home() {
               transition={{ duration: 1.5, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
               <h2 className="text-4xl md:text-6xl lg:text-7xl text-white font-serif tracking-widest mb-4" style={{ textShadow: '2px 2px 20px rgba(0,0,0,0.8)' }}>
-                {images[clickedImage !== null ? clickedImage : hoveredImage].title1}
+                {images[clickedImage].title1}
               </h2>
               <h3 className="text-2xl md:text-4xl text-white/80 font-serif tracking-[0.3em] mb-4">
-                {images[clickedImage !== null ? clickedImage : hoveredImage].title2}
+                {images[clickedImage].title2}
               </h3>
               <h1 className="text-6xl md:text-8xl lg:text-[9rem] text-[#E5D3B3] font-serif tracking-tighter uppercase" style={{ textShadow: '0 0 40px rgba(229,211,179,0.3)' }}>
-                {images[clickedImage !== null ? clickedImage : hoveredImage].title3}
+                {images[clickedImage].title3}
               </h1>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.2, duration: 0.8 }}
+                className="mt-12 pointer-events-auto"
+              >
+                <button
+                  onClick={() => router.push(images[clickedImage].href)}
+                  className="px-8 py-4 border border-white/30 rounded-full text-white text-xs font-bold tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all duration-500"
+                >
+                  Explore Story
+                </button>
+              </motion.div>
             </motion.div>
+
+            <motion.button
+              className="absolute top-8 right-8 md:top-12 md:right-12 z-50 text-white hover:text-white/70 transition-colors pointer-events-auto flex items-center gap-2"
+              onClick={() => setClickedImage(null)}
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+            >
+              <span className="text-xs font-bold tracking-[0.2em] uppercase">Back</span>
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>

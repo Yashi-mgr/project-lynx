@@ -188,7 +188,7 @@ export default function PlaceGallery() {
               onMouseMove={handleMouseMove}
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              <div className="relative w-[180vw] h-[150vh] min-w-[1400px] min-h-[900px]">
+              <div className="relative w-[220vw] h-[220vh] min-w-[1800px] min-h-[1800px]">
                 {/* Back button */}
                 <div className="absolute top-12 left-32 z-50">
                   <Link href="/" className="text-black/60 hover:text-black transition-colors font-medium flex items-center gap-2 px-4 py-2 bg-white/30 backdrop-blur-md rounded-full border border-white/40 shadow-sm">
@@ -223,6 +223,7 @@ export default function PlaceGallery() {
                         className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
                         unoptimized
                         draggable="false"
+                        priority={index < 4}
                       />
                     </div>
                   </motion.div>
@@ -273,6 +274,7 @@ export default function PlaceGallery() {
                     className="object-cover"
                     unoptimized
                     draggable="false"
+                    priority
                   />
                 </div>
               </motion.div>

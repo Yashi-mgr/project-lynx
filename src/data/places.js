@@ -10,14 +10,14 @@ export const placesData = {
       sidebarText: "#a89a87", // Subtle ethereal tone for the background text
     },
     images: [
-      { src: "/images/mustang/Landing.jpg", top: "10%", left: "5%", width: "400px" },
-      { src: "/images/mustang/Mustang1.jpg", top: "5%", left: "35%", width: "300px" },
-      { src: "/images/mustang/Mustang2.jpg", top: "15%", left: "65%", width: "450px" },
-      { src: "/images/mustang/Mustang3.jpg", top: "45%", left: "15%", width: "350px" },
-      { src: "/images/mustang/Mustang4.jpg", top: "55%", left: "45%", width: "400px" },
-      { src: "/images/mustang/Mustang5.jpg", top: "40%", left: "80%", width: "300px" },
-      { src: "/images/mustang/Mustang6.jpg", top: "75%", left: "8%", width: "450px" },
-      { src: "/images/mustang/Mustang7.jpg", top: "85%", left: "38%", width: "350px" },
+      { src: "/images/mustang/Landing.jpg", top: "8%", left: "5%", width: "400px" },
+      { src: "/images/mustang/Mustang1.jpg", top: "12%", left: "38%", width: "300px" },
+      { src: "/images/mustang/Mustang2.jpg", top: "5%", left: "70%", width: "450px" },
+      { src: "/images/mustang/Mustang3.jpg", top: "45%", left: "8%", width: "350px" },
+      { src: "/images/mustang/Mustang4.jpg", top: "50%", left: "42%", width: "400px" },
+      { src: "/images/mustang/Mustang5.jpg", top: "42%", left: "75%", width: "300px" },
+      { src: "/images/mustang/Mustang6.jpg", top: "80%", left: "15%", width: "450px" },
+      { src: "/images/mustang/Mustang7.jpg", top: "85%", left: "45%", width: "350px" },
     ]
   },
   pokhara: {
@@ -31,15 +31,15 @@ export const placesData = {
       sidebarText: "#5c85a6", // Darker blue
     },
     images: [
-      { src: "/images/pokhara/Landing.jpg", top: "8%", left: "8%", width: "420px" },
-      { src: "/images/pokhara/Pokhara1.jpg", top: "12%", left: "40%", width: "320px" },
-      { src: "/images/pokhara/Pokhara2.jpg", top: "10%", left: "70%", width: "400px" },
-      { src: "/images/pokhara/Pokhara3.jpg", top: "50%", left: "10%", width: "300px" },
-      { src: "/images/pokhara/Pokhara4.jpg", top: "60%", left: "38%", width: "450px" },
-      { src: "/images/pokhara/Pokhara5.jpg", top: "45%", left: "75%", width: "350px" },
-      { src: "/images/pokhara/Pokhara6.jpg", top: "80%", left: "15%", width: "400px" },
-      { src: "/images/pokhara/Pokhara7.jpg", top: "85%", left: "55%", width: "300px" },
-      { src: "/images/pokhara/Pokhara8.jpg", top: "75%", left: "80%", width: "380px" },
+      { src: "/images/pokhara/Landing.jpg", top: "5%", left: "8%", width: "420px" },
+      { src: "/images/pokhara/Pokhara1.jpg", top: "15%", left: "35%", width: "320px" },
+      { src: "/images/pokhara/Pokhara2.jpg", top: "8%", left: "70%", width: "400px" },
+      { src: "/images/pokhara/Pokhara3.jpg", top: "50%", left: "5%", width: "300px" },
+      { src: "/images/pokhara/Pokhara4.jpg", top: "45%", left: "40%", width: "450px" },
+      { src: "/images/pokhara/Pokhara5.jpg", top: "55%", left: "72%", width: "350px" },
+      { src: "/images/pokhara/Pokhara6.jpg", top: "85%", left: "12%", width: "400px" },
+      { src: "/images/pokhara/Pokhara7.jpg", top: "80%", left: "38%", width: "300px" },
+      { src: "/images/pokhara/Pokhara8.jpg", top: "88%", left: "68%", width: "380px" },
     ]
   }
 };

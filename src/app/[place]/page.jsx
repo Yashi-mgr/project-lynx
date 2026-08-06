@@ -14,23 +14,54 @@ export default function PlaceGallery() {
   const placeData = placesData[placeId];
 
   const containerRef = useRef(null);
+  const dragRef = useRef({ isDragging: false, lastX: 0, lastY: 0 });
   const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [startY, setStartY] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const [scrollTop, setScrollTop] = useState(0);
   const [showIntro, setShowIntro] = useState(false);
   const [viewMode, setViewMode] = useState("gallery");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Initial center scroll position
+  // Initial center scroll position (start at the center block of the 3x3 grid)
   useEffect(() => {
     if (containerRef.current) {
       const container = containerRef.current;
-      container.scrollLeft = (container.scrollWidth - container.clientWidth) * 0.1;
-      container.scrollTop = (container.scrollHeight - container.clientHeight) * 0.2;
+      const blockWidth = container.scrollWidth / 3;
+      const blockHeight = container.scrollHeight / 3;
+      
+      // Center the view on the middle block
+      container.scrollLeft = blockWidth + (blockWidth - container.clientWidth) / 2;
+      container.scrollTop = blockHeight + (blockHeight - container.clientHeight) / 2;
     }
-  }, [placeId]);
+  }, [placeId, viewMode]);
+
+  const handleScroll = () => {
+    if (!containerRef.current) return;
+    const { scrollLeft, scrollTop, scrollWidth, scrollHeight } = containerRef.current;
+    
+    // Each block is 1/3 of the total scrollable width/height
+    const blockWidth = scrollWidth / 3;
+    const blockHeight = scrollHeight / 3;
+
+    let newScrollLeft = scrollLeft;
+    let newScrollTop = scrollTop;
+
+    // Wrap horizontally
+    if (scrollLeft < blockWidth * 0.5) newScrollLeft += blockWidth;
+    else if (scrollLeft > blockWidth * 1.5) newScrollLeft -= blockWidth;
+
+    // Wrap vertically
+    if (scrollTop < blockHeight * 0.5) newScrollTop += blockHeight;
+    else if (scrollTop > blockHeight * 1.5) newScrollTop -= blockHeight;
+
+    if (newScrollLeft !== scrollLeft || newScrollTop !== scrollTop) {
+      // If actively dragging, adjust the drag origin to prevent jumping
+      if (dragRef.current.isDragging) {
+        dragRef.current.lastX += (scrollLeft - newScrollLeft) / 1.5;
+        dragRef.current.lastY += (scrollTop - newScrollTop) / 1.5;
+      }
+      containerRef.current.scrollLeft = newScrollLeft;
+      containerRef.current.scrollTop = newScrollTop;
+    }
+  };
 
   if (!placeData) {
     return (
@@ -44,25 +75,30 @@ export default function PlaceGallery() {
   }
 
   const handleMouseDown = (e) => {
+    dragRef.current = { isDragging: true, lastX: e.pageX, lastY: e.pageY };
     setIsDragging(true);
-    setStartX(e.pageX - containerRef.current.offsetLeft);
-    setStartY(e.pageY - containerRef.current.offsetTop);
-    setScrollLeft(containerRef.current.scrollLeft);
-    setScrollTop(containerRef.current.scrollTop);
   };
 
-  const handleMouseLeave = () => setIsDragging(false);
-  const handleMouseUp = () => setIsDragging(false);
+  const handleMouseLeave = () => {
+    dragRef.current.isDragging = false;
+    setIsDragging(false);
+  };
+
+  const handleMouseUp = () => {
+    dragRef.current.isDragging = false;
+    setIsDragging(false);
+  };
 
   const handleMouseMove = (e) => {
-    if (!isDragging) return;
+    if (!dragRef.current.isDragging) return;
     e.preventDefault();
-    const x = e.pageX - containerRef.current.offsetLeft;
-    const y = e.pageY - containerRef.current.offsetTop;
-    const walkX = (x - startX) * 1.5;
-    const walkY = (y - startY) * 1.5;
-    containerRef.current.scrollLeft = scrollLeft - walkX;
-    containerRef.current.scrollTop = scrollTop - walkY;
+    const deltaX = (e.pageX - dragRef.current.lastX) * 1.5;
+    const deltaY = (e.pageY - dragRef.current.lastY) * 1.5;
+    dragRef.current.lastX = e.pageX;
+    dragRef.current.lastY = e.pageY;
+    
+    containerRef.current.scrollLeft -= deltaX;
+    containerRef.current.scrollTop -= deltaY;
   };
 
   const text1 = placeData.titleText.split(" ");
@@ -174,47 +210,73 @@ export default function PlaceGallery() {
               onMouseLeave={handleMouseLeave}
               onMouseUp={handleMouseUp}
               onMouseMove={handleMouseMove}
+              onScroll={handleScroll}
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              <div className="relative w-[220vw] h-[220vh] min-w-[1800px] min-h-[1800px]">
-                {/* Back button */}
-                <div className="absolute top-12 left-32 z-50">
-                  <Link href="/" className="text-black/60 hover:text-black transition-colors font-medium flex items-center gap-2 px-4 py-2 bg-white/30 backdrop-blur-md rounded-full border border-white/40 shadow-sm">
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="19" y1="12" x2="5" y2="12"></line>
-                      <polyline points="12 19 5 12 12 5"></polyline>
-                    </svg>
-                    Back to Start
-                  </Link>
-                </div>
-
-                {placeData.images.map((img, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: 60, filter: "blur(8px)" }}
-                    whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                    viewport={{ root: containerRef, once: false, amount: 0.15 }}
-                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                    className="absolute group shadow-2xl"
+              <div 
+                className="relative"
+                style={{
+                  width: '660vw',
+                  height: '660vh',
+                  minWidth: '5400px',
+                  minHeight: '5400px'
+                }}
+              >
+                {[
+                  { x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 },
+                  { x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 },
+                  { x: 0, y: 2 }, { x: 1, y: 2 }, { x: 2, y: 2 }
+                ].map((pos, gridIndex) => (
+                  <div 
+                    key={gridIndex} 
+                    className="absolute"
                     style={{
-                      top: img.top,
-                      left: img.left,
-                      width: img.width,
-                      aspectRatio: img.src.includes('800/600') ? '4/3' : '3/4'
+                      left: `${pos.x * 33.33333}%`,
+                      top: `${pos.y * 33.33333}%`,
+                      width: '33.33333%',
+                      height: '33.33333%'
                     }}
                   >
-                    <div className="relative w-full h-full border-[6px] border-white/20 overflow-hidden">
-                      <Image
-                        src={img.src}
-                        alt={`${placeData.titleText} image ${index + 1}`}
-                        fill
-                        className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
-                        unoptimized
-                        draggable="false"
-                        priority={index < 4}
-                      />
+                    {/* Back button */}
+                    <div className="absolute top-12 left-32 z-50">
+                      <Link href="/" className="text-black/60 hover:text-black transition-colors font-medium flex items-center gap-2 px-4 py-2 bg-white/30 backdrop-blur-md rounded-full border border-white/40 shadow-sm">
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="19" y1="12" x2="5" y2="12"></line>
+                          <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Back to Start
+                      </Link>
                     </div>
-                  </motion.div>
+
+                    {placeData.images.map((img, index) => (
+                      <motion.div
+                        key={`${gridIndex}-${index}`}
+                        initial={{ opacity: 0, x: 60, filter: "blur(8px)" }}
+                        whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                        viewport={{ root: containerRef, once: false, amount: 0.15 }}
+                        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                        className="absolute group shadow-2xl"
+                        style={{
+                          top: img.top,
+                          left: img.left,
+                          width: img.width,
+                          aspectRatio: img.src.includes('800/600') ? '4/3' : '3/4'
+                        }}
+                      >
+                        <div className="relative w-full h-full border-[6px] border-white/20 overflow-hidden">
+                          <Image
+                            src={img.src}
+                            alt={`${placeData.titleText} image ${index + 1}`}
+                            fill
+                            className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
+                            unoptimized
+                            draggable="false"
+                            priority={index < 4 && pos.x === 1 && pos.y === 1}
+                          />
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
                 ))}
               </div>
             </div>

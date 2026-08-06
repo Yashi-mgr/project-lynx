@@ -98,13 +98,17 @@ export default function PlaceGallery() {
         style={{ transformStyle: 'preserve-3d' }}
       >
         {/* FRONT FACE (Gallery) */}
-        <div 
+        <motion.div 
           className="absolute inset-0 w-full h-full transition-colors duration-1000"
           style={{ 
             backgroundColor: placeData.theme.bg,
             backfaceVisibility: 'hidden',
-            WebkitBackfaceVisibility: 'hidden'
+            WebkitBackfaceVisibility: 'hidden',
+            pointerEvents: showIntro ? 'none' : 'auto'
           }}
+          initial={false}
+          animate={{ opacity: showIntro ? 0 : 1 }}
+          transition={{ duration: 0.1, delay: 0.25 }}
         >
       {/* Gallery content begins */}
 
@@ -160,6 +164,7 @@ export default function PlaceGallery() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8 }}
             className="absolute inset-0"
+            style={{ pointerEvents: showIntro ? 'none' : 'auto' }}
           >
             {/* 2D Scrollable Area */}
             <div 
@@ -282,17 +287,21 @@ export default function PlaceGallery() {
         )}
       </AnimatePresence>
       
-        </div>
+        </motion.div>
 
         {/* BACK FACE (Story) */}
-        <div 
-          className="absolute inset-0 w-full h-full flex flex-col items-center justify-center text-white px-8 text-center pointer-events-auto"
+        <motion.div 
+          className="absolute inset-0 w-full h-full flex flex-col items-center justify-center text-white px-8 text-center"
           style={{ 
             backgroundColor: placeData.theme.bg,
             transform: 'rotateY(180deg)',
             backfaceVisibility: 'hidden',
-            WebkitBackfaceVisibility: 'hidden'
+            WebkitBackfaceVisibility: 'hidden',
+            pointerEvents: showIntro ? 'auto' : 'none'
           }}
+          initial={false}
+          animate={{ opacity: showIntro ? 1 : 0 }}
+          transition={{ duration: 0.1, delay: 0.25 }}
         >
           <button 
             onClick={() => setShowIntro(false)}
@@ -340,7 +349,7 @@ export default function PlaceGallery() {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </motion.div>
       </motion.div>
 
       {/* Hide scrollbar styles for webkit */}

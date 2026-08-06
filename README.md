@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Lynx
+
+Lynx is an ongoing photography storytelling platform built with **Next.js** and **Tailwind CSS**. Rather than presenting photographs as a traditional gallery, Lynx aims to create immersive visual stories through cinematic layouts, smooth animations, and interactive user experiences.
+
+> **Status:** Currently under active development.
+
+## Features
+
+- Story-driven photography galleries
+- Smooth animations and transitions
+- Clean, minimal, and responsive UI
+- Interactive gallery experience
+- Dynamic routing for destinations
+- Dedicated "Behind the Lens" page
+
+## Tech Stack
+
+- Next.js
+- Tailwind CSS
+- Gsap
+- Git & GitHub
 
 ## Getting Started
 
-First, run the development server:
+Clone the repository:
+
+```bash
+git clone https://github.com/Yashi-mgr/project-lynx.git
+```
+
+Navigate to the project:
+
+```bash
+cd project-lynx
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open **http://localhost:3000** in your browser.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Roadmap
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [x] Landing page
+- [x] Gallery page
+- [x] Behind the Lens page
+- [x] Custom cursor
+- [ ] Dynamic destination routing
+- [ ] Mobile responsiveness
+- [ ] Performance optimization
+- [ ] Additional destination stories
 
-## Learn More
+## License
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is for learning and portfolio purposes.

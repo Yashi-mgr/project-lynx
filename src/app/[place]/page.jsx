@@ -19,7 +19,7 @@ export default function PlaceGallery() {
   const [startY, setStartY] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
-  const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState(false);
   const [viewMode, setViewMode] = useState("gallery");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -30,15 +30,6 @@ export default function PlaceGallery() {
       container.scrollLeft = (container.scrollWidth - container.clientWidth) * 0.1;
       container.scrollTop = (container.scrollHeight - container.clientHeight) * 0.2;
     }
-  }, [placeId]);
-
-  useEffect(() => {
-    // Reset intro if place changes
-    setShowIntro(true);
-    const timer = setTimeout(() => {
-      setShowIntro(false);
-    }, 7000);
-    return () => clearTimeout(timer);
   }, [placeId]);
 
   if (!placeData) {
@@ -96,47 +87,26 @@ export default function PlaceGallery() {
 
   return (
     <div 
-      className="relative w-screen h-screen overflow-hidden transition-colors duration-1000"
-      style={{ backgroundColor: placeData.theme.bg }}
+      className="relative w-screen h-screen bg-black overflow-hidden"
+      style={{ perspective: "2000px" }}
     >
-      {/* Intro Text Animation Overlay */}
-      <AnimatePresence>
-        {showIntro && (
-          <motion.div
-            className="absolute inset-0 z-[100] flex flex-col items-center justify-center text-white px-8 text-center pointer-events-none"
-            style={{ backgroundColor: placeData.theme.bg }}
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, filter: "blur(10px)", transition: { duration: 2, ease: "easeInOut" } }}
-          >
-            <div className="max-w-3xl space-y-12">
-              <div 
-                className="text-6xl md:text-8xl font-serif tracking-widest uppercase" 
-                style={{ color: placeData.theme.textHighlight, textShadow: '2px 2px 20px rgba(0,0,0,0.2)' }}
-              >
-                {text1.map((word, i) => (
-                  <motion.span key={i} custom={i} variants={wordVariants} initial="hidden" animate="visible" exit="exit" className="inline-block mx-3">
-                    {word}
-                  </motion.span>
-                ))}
-              </div>
-              <div className="text-3xl md:text-5xl font-serif text-white/95">
-                {text2.map((word, i) => (
-                  <motion.span key={i} custom={i + text1.length} variants={wordVariants} initial="hidden" animate="visible" exit="exit" className="inline-block mx-2">
-                    {word}
-                  </motion.span>
-                ))}
-              </div>
-              <div className="text-xl md:text-3xl font-light leading-relaxed text-white/80 max-w-2xl mx-auto">
-                {text3.map((word, i) => (
-                  <motion.span key={i} custom={i + text1.length + text2.length} variants={wordVariants} initial="hidden" animate="visible" exit="exit" className="inline-block mx-1">
-                    {word}
-                  </motion.span>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <motion.div
+        className="w-full h-full relative"
+        initial={false}
+        animate={{ rotateY: showIntro ? -180 : 0 }}
+        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+        style={{ transformStyle: 'preserve-3d' }}
+      >
+        {/* FRONT FACE (Gallery) */}
+        <div 
+          className="absolute inset-0 w-full h-full transition-colors duration-1000"
+          style={{ 
+            backgroundColor: placeData.theme.bg,
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden'
+          }}
+        >
+      {/* Gallery content begins */}
 
       {/* Fixed Sidebar Text */}
       <div className="absolute left-0 top-0 h-full w-24 md:w-32 flex items-center justify-center z-50 pointer-events-none">
@@ -165,6 +135,19 @@ export default function PlaceGallery() {
           className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${viewMode === "single" ? "bg-white text-black shadow-sm" : "text-white hover:bg-white/20"}`}
         >
           Single
+        </button>
+      </div>
+
+      {/* Unfold Story Button */}
+      <div className="absolute bottom-12 left-12 z-50">
+        <button 
+          onClick={() => setShowIntro(true)}
+          className="px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full border border-white/20 text-white text-xs font-bold tracking-widest uppercase transition-all shadow-lg flex items-center gap-3 group"
+        >
+          <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+          </svg>
+          Unfold the story
         </button>
       </div>
 
@@ -299,6 +282,67 @@ export default function PlaceGallery() {
         )}
       </AnimatePresence>
       
+        </div>
+
+        {/* BACK FACE (Story) */}
+        <div 
+          className="absolute inset-0 w-full h-full flex flex-col items-center justify-center text-white px-8 text-center pointer-events-auto"
+          style={{ 
+            backgroundColor: placeData.theme.bg,
+            transform: 'rotateY(180deg)',
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden'
+          }}
+        >
+          <button 
+            onClick={() => setShowIntro(false)}
+            className="absolute top-12 right-12 z-[110] text-white/70 hover:text-white transition-colors p-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 cursor-pointer shadow-lg"
+          >
+            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+          
+          <AnimatePresence>
+            {showIntro && (
+              <motion.div 
+                className="max-w-3xl space-y-12"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <div 
+                  className="text-6xl md:text-8xl font-serif tracking-widest uppercase" 
+                  style={{ color: placeData.theme.textHighlight, textShadow: '2px 2px 20px rgba(0,0,0,0.2)' }}
+                >
+                  {text1.map((word, i) => (
+                    <motion.span key={i} custom={i} variants={wordVariants} initial="hidden" animate="visible" exit="exit" className="inline-block mx-3">
+                      {word}
+                    </motion.span>
+                  ))}
+                </div>
+                <div className="text-3xl md:text-5xl font-serif text-white/95">
+                  {text2.map((word, i) => (
+                    <motion.span key={i} custom={i + text1.length} variants={wordVariants} initial="hidden" animate="visible" exit="exit" className="inline-block mx-2">
+                      {word}
+                    </motion.span>
+                  ))}
+                </div>
+                <div className="text-xl md:text-3xl font-light leading-relaxed text-white/80 max-w-2xl mx-auto">
+                  {text3.map((word, i) => (
+                    <motion.span key={i} custom={i + text1.length + text2.length} variants={wordVariants} initial="hidden" animate="visible" exit="exit" className="inline-block mx-1">
+                      {word}
+                    </motion.span>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.div>
+
       {/* Hide scrollbar styles for webkit */}
       <style dangerouslySetInnerHTML={{__html: `
         ::-webkit-scrollbar {

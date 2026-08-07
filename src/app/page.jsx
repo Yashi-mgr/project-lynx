@@ -69,8 +69,9 @@ export default function Home() {
     <div className="min-h-screen flex flex-col relative overflow-x-hidden bg-background">
 
 
-      {/* Main Gallery */}
-      <main className="flex-1 flex items-center justify-center w-full px-12 md:px-24">
+      {/* Hero Section */}
+      <section className="h-screen w-full relative flex items-center justify-center shrink-0 pt-16 md:pt-24">
+        <main className="w-full px-12 md:px-24 flex items-center justify-center">
         <div className="flex items-center justify-center w-full max-w-5xl">
           {images.map((img, index) => {
             const isActive = clickedImage === index;
@@ -117,10 +118,11 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Right side text */}
-      <div className={`absolute right-4 md:right-8 top-1/2 flex items-center justify-center w-12 h-12 -translate-y-1/2 transition-opacity duration-500 ${clickedImage !== null ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-        <KnowMoreButton />
-      </div>
+        {/* Right side text */}
+        <div className={`absolute right-4 md:right-8 top-1/2 flex items-center justify-center w-12 h-12 -translate-y-1/2 transition-opacity duration-500 ${clickedImage !== null ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+          <KnowMoreButton />
+        </div>
+      </section>
 
       {/* Full Screen Cinematic Overlay */}
       <AnimatePresence>

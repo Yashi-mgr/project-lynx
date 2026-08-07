@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full flex flex-col relative">
         <AnimatedCursor />
-        <header className="fixed top-0 left-0 w-full p-8 md:p-12 lg:px-16 z-50 pointer-events-none flex justify-between items-start">
+        <header className="fixed top-0 left-0 w-full pt-4 md:pt-6 px-8 md:px-12 lg:px-16 z-50 pointer-events-none flex justify-between items-start">
           <Link href="/" className="pointer-events-auto flex flex-col items-center">
             <Image src="/images/Logo.png" alt="Lynx Logo" width={400} height={160} className="w-auto h-32 md:h-48" unoptimized priority />
           </Link>

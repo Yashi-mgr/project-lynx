@@ -263,6 +263,14 @@ export default function PlaceGallery() {
                             draggable="false"
                             priority={index < 4 && pos.x === 1 && pos.y === 1}
                           />
+                          <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                            <span 
+                              className="text-white font-bold text-4xl md:text-5xl tracking-[0.2em] uppercase opacity-40"
+                              style={{ textShadow: '0px 2px 15px rgba(0,0,0,0.8)' }}
+                            >
+                              Lynx
+                            </span>
+                          </div>
                         </div>
                       </motion.div>
                     ))}
@@ -305,6 +313,14 @@ export default function PlaceGallery() {
                     draggable="false"
                     priority
                   />
+                  <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                    <span 
+                      className="text-white font-bold text-6xl md:text-8xl tracking-[0.2em] uppercase opacity-40"
+                      style={{ textShadow: '0px 4px 20px rgba(0,0,0,0.8)' }}
+                    >
+                      Lynx
+                    </span>
+                  </div>
                 </div>
               </motion.div>
             </AnimatePresence>

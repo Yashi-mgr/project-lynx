@@ -7,11 +7,13 @@ import Link from "next/link";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  preload: false,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  preload: false,
 });
 
 export const metadata = {
@@ -29,7 +31,7 @@ export default function RootLayout({ children }) {
         <AnimatedCursor />
         <header className="fixed top-0 left-0 w-full p-8 md:p-12 lg:px-16 z-50 pointer-events-none flex justify-between items-start">
           <Link href="/" className="pointer-events-auto flex flex-col items-center">
-            <Image src="/images/Logo.png" alt="Lynx Logo" width={240} height={96} className="w-auto h-20 md:h-28" unoptimized />
+            <Image src="/images/Logo.png" alt="Lynx Logo" width={400} height={160} className="w-auto h-32 md:h-48" unoptimized priority />
           </Link>
         </header>
         {children}

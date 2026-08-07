@@ -27,9 +27,9 @@ export default function PlaceGallery() {
       const blockWidth = container.scrollWidth / 3;
       const blockHeight = container.scrollHeight / 3;
       
-      // Center the view on the middle block
-      container.scrollLeft = blockWidth + (blockWidth - container.clientWidth) / 2;
-      container.scrollTop = blockHeight + (blockHeight - container.clientHeight) / 2;
+      // Start the view at the first image of the middle block (top-left)
+      container.scrollLeft = blockWidth;
+      container.scrollTop = blockHeight;
     }
   }, [placeId, viewMode]);
 

@@ -3,8 +3,9 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Footer from "@/components/Footer";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
@@ -65,7 +66,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden bg-background">
+    <div className="min-h-screen flex flex-col relative overflow-x-hidden bg-background">
 
 
       {/* Main Gallery */}
@@ -210,6 +211,8 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <Footer />
     </div>
   );
 }

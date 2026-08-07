@@ -162,16 +162,6 @@ export default function PlaceGallery() {
         </h1>
       </div>
 
-      {/* Back button */}
-      <div className="absolute top-12 left-12 md:left-32 z-50">
-        <Link href="/" className="text-white hover:text-white/80 transition-colors font-medium flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20 shadow-sm hover:bg-white/20">
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
-          Back to Start
-        </Link>
-      </div>
 
       {/* View Toggle */}
       <div className="absolute top-12 right-12 z-50 flex gap-2 bg-white/10 backdrop-blur-md rounded-full p-1 border border-white/20 shadow-lg">

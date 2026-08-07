@@ -57,7 +57,7 @@ export default function AnimatedCursor() {
   return (
     <>
       <motion.div
-        className="fixed top-0 left-0 w-10 h-10 rounded-full border-2 border-foreground/80 pointer-events-none z-[99999] mix-blend-difference hidden md:block"
+        className="fixed top-0 left-0 w-10 h-10 rounded-full border-2 border-white pointer-events-none z-[99999] mix-blend-difference hidden md:block"
         style={{
           x: cursorX,
           y: cursorY,
@@ -67,13 +67,13 @@ export default function AnimatedCursor() {
         }}
         animate={{
           scale: isHovering ? 1.5 : 1,
-          backgroundColor: isHovering ? "var(--foreground)" : "rgba(0, 0, 0, 0)",
-          borderColor: isHovering ? "rgba(0, 0, 0, 0)" : "var(--foreground)"
+          backgroundColor: isHovering ? "white" : "transparent",
+          borderColor: isHovering ? "transparent" : "white"
         }}
         transition={{ duration: 0.2 }}
       />
       <motion.div
-        className="fixed top-0 left-0 w-2 h-2 rounded-full bg-foreground pointer-events-none z-[99999] mix-blend-difference hidden md:block"
+        className="fixed top-0 left-0 w-2 h-2 rounded-full bg-white pointer-events-none z-[99999] mix-blend-difference hidden md:block"
         style={{
           x: dotX,
           y: dotY,

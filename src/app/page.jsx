@@ -57,35 +57,16 @@ export default function Home() {
   // Replace the 'src' values below with your own image paths (e.g., '/images/your-image.jpg')
   // Update the titles and href to point to your new destinations
   const images = [
-    { src: "/images/mustang/Landing.jpg", height: "h-[45vh] md:h-[50vh]", alt: "Mustang landscape", title1: "Echoes", title2: "Of", title3: "MUSTANG", href: "/mustang" },
-    { src: "/images/pokhara/Landing.jpg", height: "h-[55vh] md:h-[65vh]", alt: "Pokhara view", title1: "Lakes", title2: "Of", title3: "POKHARA", href: "/pokhara" },
-    { src: "https://picsum.photos/400/800?random=3", height: "h-[65vh] md:h-[80vh]", alt: "Manang mountains", title1: "Spirit", title2: "Of", title3: "MANANG", href: "/manang" },
-    { src: "https://picsum.photos/400/800?random=4", height: "h-[55vh] md:h-[65vh]", alt: "Sunlight through clouds", title1: "Heart", title2: "Of", title3: "NEPAL", href: "/nepal" },
-    { src: "https://picsum.photos/400/800?random=5", height: "h-[45vh] md:h-[50vh]", alt: "Mountain village", title1: "Soul", title2: "Of", title3: "HIMALAYAS", href: "/himalayas" },
+    { src: "/images/manang/Landing.jpg", height: "h-[45vh] md:h-[50vh]", alt: "Manang mountains", title1: "Spirit", title2: "Of", title3: "MANANG", href: "/manang", isExplored: false },
+    { src: "/images/pokhara/Landing.jpg", height: "h-[55vh] md:h-[65vh]", alt: "Pokhara view", title1: "Lakes", title2: "Of", title3: "POKHARA", href: "/pokhara", isExplored: true },
+    { src: "/images/mustang/Landing.jpg", height: "h-[65vh] md:h-[80vh]", alt: "Mustang landscape", title1: "Echoes", title2: "Of", title3: "MUSTANG", href: "/mustang", isExplored: true },
+    { src: "/images/Sikles/Landing.jpg", height: "h-[55vh] md:h-[65vh]", alt: "Sikles village", title1: "Peace", title2: "Of", title3: "SIKLES", href: "/sikles", isExplored: true },
+    { src: "/images/nepal/Landing.jpg", height: "h-[45vh] md:h-[50vh]", alt: "Sunlight through clouds", title1: "Heart", title2: "Of", title3: "NEPAL", href: "/nepal", isExplored: false },
   ];
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden bg-background">
-      {/* Navigation */}
-      <nav className={`w-full flex justify-between items-start p-8 md:p-12 lg:px-16 absolute top-0 z-10 transition-opacity duration-500 ${clickedImage !== null ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-        <div className="flex flex-col items-center">
-          <h1
-            className="text-6xl md:text-7xl font-light tracking-tighter text-foreground"
-            style={{ fontFamily: 'Brush Script MT, cursive, sans-serif' }}
-          >
-            lynx.
-          </h1>
-          <p className="text-[0.45rem] md:text-[0.55rem] font-bold tracking-[0.15em] text-foreground uppercase leading-tight text-center mt-2">
-            Wonderful, as we seen them<br />
-            Since 2011
-          </p>
-        </div>
 
-        <div className="flex gap-8 mt-4 md:mt-6">
-          <a href="#" className="text-sm font-medium hover:text-foreground/60 transition-colors">Blog</a>
-          <a href="#" className="text-sm font-medium hover:text-foreground/60 transition-colors">About</a>
-        </div>
-      </nav>
 
       {/* Main Gallery */}
       <main className="flex-1 flex items-center justify-center w-full px-12 md:px-24">
@@ -109,11 +90,11 @@ export default function Home() {
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 onClick={() => {
-                  if (clickedImage === null) {
+                  if (clickedImage === null && img.isExplored) {
                     setClickedImage(index);
                   }
                 }}
-                className={`relative flex-1 w-full ${img.height} overflow-hidden group ${isAnyActive && !isActive ? 'pointer-events-none' : 'cursor-pointer'}`}
+                className={`relative flex-1 w-full ${img.height} overflow-hidden group ${isAnyActive && !isActive ? 'pointer-events-none' : (img.isExplored ? 'cursor-pointer' : 'cursor-default')}`}
               >
                 <motion.div layoutId={`image-${index}`} className="w-full h-full relative">
                   <Image
@@ -123,6 +104,11 @@ export default function Home() {
                     className={`object-cover transition-all duration-1000 ease-out ${isActive ? 'grayscale-0' : 'grayscale group-hover:grayscale-0 group-hover:scale-105'}`}
                     unoptimized
                   />
+                  {!img.isExplored && (
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center z-10">
+                      <span className="text-white text-xs md:text-sm font-bold tracking-[0.2em] uppercase text-center px-4">Explore soon</span>
+                    </div>
+                  )}
                 </motion.div>
               </motion.div>
             );
@@ -191,12 +177,20 @@ export default function Home() {
                 transition={{ delay: 1.2, duration: 0.8 }}
                 className="mt-12 pointer-events-auto"
               >
-                <button
-                  onClick={() => router.push(images[clickedImage].href)}
-                  className="px-8 py-4 border border-white/30 rounded-full text-white text-xs font-bold tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all duration-500"
-                >
-                  Explore Story
-                </button>
+                {images[clickedImage].isExplored ? (
+                  <button
+                    onClick={() => router.push(images[clickedImage].href)}
+                    className="px-8 py-4 border border-white/30 rounded-full text-white text-xs font-bold tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all duration-500"
+                  >
+                    Explore Story
+                  </button>
+                ) : (
+                  <button
+                    className="px-8 py-4 border border-white/30 rounded-full text-white/50 text-xs font-bold tracking-[0.2em] uppercase cursor-not-allowed bg-black/20"
+                  >
+                    Yet to Explore
+                  </button>
+                )}
               </motion.div>
             </motion.div>
 

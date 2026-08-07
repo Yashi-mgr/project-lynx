@@ -1,6 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import AnimatedCursor from "@/components/AnimatedCursor";
 import "./globals.css";
+import Image from "next/image";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,8 +25,13 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col relative">
         <AnimatedCursor />
+        <header className="fixed top-0 left-0 w-full p-8 md:p-12 lg:px-16 z-50 pointer-events-none flex justify-between items-start">
+          <Link href="/" className="pointer-events-auto flex flex-col items-center">
+            <Image src="/images/Logo.png" alt="Lynx Logo" width={240} height={96} className="w-auto h-20 md:h-28" unoptimized />
+          </Link>
+        </header>
         {children}
       </body>
     </html>

@@ -14,7 +14,7 @@ export default function PlaceGallery() {
   const placeData = placesData[placeId];
 
   const containerRef = useRef(null);
-  const dragRef = useRef({ isDragging: false, lastX: 0, lastY: 0 });
+  const dragRef = useRef({ isDragging: false, lastX: 0, lastY: 0, startX: 0, startY: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [showIntro, setShowIntro] = useState(false);
   const [viewMode, setViewMode] = useState("gallery");
@@ -75,7 +75,7 @@ export default function PlaceGallery() {
   }
 
   const handleMouseDown = (e) => {
-    dragRef.current = { isDragging: true, lastX: e.pageX, lastY: e.pageY };
+    dragRef.current = { isDragging: true, lastX: e.pageX, lastY: e.pageY, startX: e.pageX, startY: e.pageY };
     setIsDragging(true);
   };
 
@@ -245,12 +245,21 @@ export default function PlaceGallery() {
                         whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
                         viewport={{ root: containerRef, once: false, amount: 0.15 }}
                         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                        className="absolute group shadow-2xl"
+                        className="absolute group shadow-2xl cursor-pointer"
                         style={{
                           top: img.top,
                           left: img.left,
                           width: img.width,
                           aspectRatio: img.src.includes('800/600') ? '4/3' : '3/4'
+                        }}
+                        onClick={(e) => {
+                          const dx = Math.abs(e.pageX - dragRef.current.startX);
+                          const dy = Math.abs(e.pageY - dragRef.current.startY);
+                          // If distance moved is very small, treat as a click
+                          if (dx < 10 && dy < 10) {
+                            setCurrentImageIndex(index);
+                            setViewMode("single");
+                          }
                         }}
                       >
                         <div className="relative w-full h-full border-[6px] border-white/20 overflow-hidden">

@@ -10,6 +10,7 @@ export default function Footer() {
           width={240} 
           height={96} 
           className="w-auto h-16 md:h-24 mb-8 invert" 
+          style={{ width: "auto" }}
           unoptimized 
         />
         

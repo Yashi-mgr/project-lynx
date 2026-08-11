@@ -262,7 +262,7 @@ export default function PlaceGallery() {
                           }
                         }}
                       >
-                        <div className="relative w-full h-full border-[6px] border-white/20 overflow-hidden">
+                        <div className="relative w-full h-full overflow-hidden">
                           <Image
                             src={img.src}
                             alt={`${placeData.titleText} image ${index + 1}`}
@@ -312,7 +312,7 @@ export default function PlaceGallery() {
                   maxHeight: '85vh'
                 }}
               >
-                <div className="relative w-full h-full border-[6px] border-white/20 overflow-hidden">
+                <div className="relative w-full h-full overflow-hidden">
                   <Image
                     src={placeData.images[currentImageIndex].src}
                     alt={`${placeData.titleText} image ${currentImageIndex + 1}`}

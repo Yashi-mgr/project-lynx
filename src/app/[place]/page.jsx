@@ -219,8 +219,8 @@ export default function PlaceGallery() {
                 style={{
                   width: '660vw',
                   height: '660vh',
-                  minWidth: '5400px',
-                  minHeight: '5400px'
+                  minWidth: '6000px',
+                  minHeight: '6000px'
                 }}
               >
                 {[
@@ -297,10 +297,10 @@ export default function PlaceGallery() {
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 className="relative pointer-events-auto shadow-2xl"
                 style={{
-                  width: placeData.images[currentImageIndex].width,
+                  height: '80vh',
                   aspectRatio: placeData.images[currentImageIndex].src.includes('800/600') ? '4/3' : '3/4',
-                  maxWidth: '70vw',
-                  maxHeight: '75vh'
+                  maxWidth: '90vw',
+                  maxHeight: '85vh'
                 }}
               >
                 <div className="relative w-full h-full border-[6px] border-white/20 overflow-hidden">

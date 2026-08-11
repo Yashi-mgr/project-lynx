@@ -16,8 +16,8 @@ export const placesData = {
       { src: "/images/mustang/Mustang3.jpg", top: "45%", left: "8%", width: "350px" },
       { src: "/images/mustang/Mustang4.jpg", top: "50%", left: "42%", width: "400px" },
       { src: "/images/mustang/Mustang5.jpg", top: "42%", left: "75%", width: "300px" },
-      { src: "/images/mustang/Mustang6.jpg", top: "80%", left: "15%", width: "450px" },
-      { src: "/images/mustang/Mustang7.jpg", top: "85%", left: "45%", width: "350px" },
+      { src: "/images/mustang/Mustang6.jpg", top: "75%", left: "15%", width: "450px" },
+      { src: "/images/mustang/Mustang7.jpg", top: "80%", left: "45%", width: "350px" },
     ]
   },
   pokhara: {
@@ -37,9 +37,9 @@ export const placesData = {
       { src: "/images/pokhara/Pokhara3.jpg", top: "50%", left: "5%", width: "300px" },
       { src: "/images/pokhara/Pokhara4.jpg", top: "45%", left: "40%", width: "450px" },
       { src: "/images/pokhara/Pokhara5.jpg", top: "55%", left: "72%", width: "350px" },
-      { src: "/images/pokhara/Pokhara6.jpg", top: "85%", left: "12%", width: "400px" },
-      { src: "/images/pokhara/Pokhara7.jpg", top: "80%", left: "38%", width: "300px" },
-      { src: "/images/pokhara/Pokhara8.jpg", top: "88%", left: "68%", width: "380px" },
+      { src: "/images/pokhara/Pokhara6.jpg", top: "75%", left: "12%", width: "400px" },
+      { src: "/images/pokhara/Pokhara7.jpg", top: "78%", left: "38%", width: "300px" },
+      { src: "/images/pokhara/Pokhara8.jpg", top: "80%", left: "68%", width: "380px" },
     ]
   }
 };
